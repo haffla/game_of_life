@@ -1,6 +1,5 @@
 class Game
-  ALIVE_CHAR = 'o'.freeze
-  DEAD_CHAR = '_'.freeze
+  attr_accessor :cells
 
   def initialize(cells)
     @width = cells.first.size
@@ -8,24 +7,29 @@ class Game
     @cells = cells
   end
 
-  def evolve
-    new_gen = @cells.map(&:dup)
+  def self.from(input, alive_char:)
+    cells = input.split("\n").map { |line| line.split('').map { |char| char == alive_char } }
+    new(cells)
+  end
 
-    @cells.each_with_index do |row, y|
+  def evolve
+    new_gen = cells.map(&:dup)
+
+    cells.each_with_index do |row, y|
       row.each_with_index do |cell, x|
         new_gen[y][x] = determine_new_state(cell, x, y)
       end
     end
 
-    @cells = new_gen
+    self.cells = new_gen
   end
 
   def determine_new_state(cell, x, y)
     case [cell, n_alive_neighbours_for(x, y)]
-    in [ALIVE_CHAR, 2] | [ALIVE_CHAR, 3] | [DEAD_CHAR, 3]
-      ALIVE_CHAR
+    in [true, 2] | [true, 3] | [false, 3]
+      true
     else
-      DEAD_CHAR
+      false
     end
   end
 
@@ -42,12 +46,8 @@ class Game
     ]
 
     coords.count do |y_coord, x_coord|
-      y_coord >= 0 && y_coord < @height && x_coord >= 0 && x_coord < @width &&
-        @cells[y_coord][x_coord] == ALIVE_CHAR
+      y_coord >= 0 && y_coord < @height && x_coord >= 0 && x_coord < @width && cells[y_coord][x_coord]
     end
   end
 
-  def as_string
-    @cells.map(&:join).join("\n")
-  end
 end
