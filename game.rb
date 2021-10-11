@@ -1,4 +1,4 @@
-class Board
+class Game
   ALIVE_CHAR = 'o'.freeze
   DEAD_CHAR = '_'.freeze
 
@@ -8,7 +8,7 @@ class Board
     @cells = cells
   end
 
-  def make_next_generation
+  def evolve
     new_gen = @cells.map(&:dup)
 
     @cells.each_with_index do |row, y|
@@ -50,20 +50,4 @@ class Board
   def as_string
     @cells.map(&:join).join("\n")
   end
-end
-
-cells = if ARGV.empty?
-          File.read('./inputs/beacon.txt')
-        else
-          File.read(ARGV.first)
-        end
-
-cells = cells.split("\n").map { |line| line.split('') }
-board = Board.new(cells)
-
-loop do
-  system 'clear'
-  puts board.as_string
-  board.make_next_generation
-  sleep 0.5
 end

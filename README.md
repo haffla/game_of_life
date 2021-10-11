@@ -1,7 +1,7 @@
 ### Conway's Game of Live
 
 ```bash
-ruby game.rb
+ruby gol.rb
 ```
 
 Requires Ruby 3.
